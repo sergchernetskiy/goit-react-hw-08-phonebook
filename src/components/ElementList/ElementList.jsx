@@ -1,13 +1,26 @@
 import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { AiOutlineRest } from 'react-icons/ai';
 
-import { deleteContacts } from '../../redux/contactsSlice';
+import { deleteContact } from '../../redux/operations';
+import { selectError } from '../../redux/selectors';
 import { Button, Text, Circle, ElementList } from './ElementList.styled';
+import { notifyWarn } from 'components/Notification/Notification';
 
 export const ElementListContacts = ({ id, name, number }) => {
   const dispatch = useDispatch();
+  const error = useSelector(selectError);
 
-  const handleDelete = () => dispatch(deleteContacts({ id }));
+  const handleDelete = () => {
+    dispatch(deleteContact({ id }));
+
+    if (error) {
+      notifyWarn(`Name ${name} has been not removed`);
+      return;
+    }
+
+    notifyWarn(`${name} has been removed successfully`);
+  };
 
   return (
     <ElementList>

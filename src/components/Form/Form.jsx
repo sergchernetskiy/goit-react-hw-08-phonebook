@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { nanoid } from '@reduxjs/toolkit';
+import { selectContacts, selectError } from '../../redux/selectors';
 
 import { FormField, Label, Input, Button } from './Form.styled';
 import { notifyWarn } from 'components/Notification/Notification';
-import { getContacts } from '../../redux/selectors';
-import { addContacts } from '../../redux/contactsSlice';
+import { addContact } from '../../redux/operations';
 
 const Form = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  const contacts = useSelector(getContacts).initialContacts;
+  const contacts = useSelector(selectContacts);
+  const error = useSelector(selectError);
+
   const dispatch = useDispatch();
 
   const handleChange = e => {
@@ -43,17 +44,23 @@ const Form = () => {
       contact => contact.number === number
     );
 
+    if (error) {
+      notifyWarn(`Name ${name} has been not added`);
+      return;
+    }
+
     if (searchedContactName) {
-      notifyWarn(`Name ${name} is already in contacts`);
+      notifyWarn(`${name} is existed in contacts`);
       return;
     }
 
     if (searchedContactNumber) {
-      notifyWarn(`Number ${number} is already in contacts`);
+      notifyWarn(`${number} is existed in contacts`);
       return;
     }
 
-    dispatch(addContacts({ id: nanoid(), name, number }));
+    dispatch(addContact({ name, number }));
+    notifyWarn(`${name} has been added successfully`);
 
     reset();
   };
