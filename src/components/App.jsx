@@ -14,6 +14,7 @@ import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactsList/ContactsList';
 import { Title, TitleContacts } from './Title/Title.styled';
 import { Container } from './Container/Container.styled';
+import { Loader } from './Loader/Loader';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -36,12 +37,8 @@ const App = () => {
         <TitleContacts>Contacts</TitleContacts>
         <Filter />
         {!isLoading && error && <p>{error}</p>}
-        {contacts.length > 0 && !error ? (
-          <ContactList />
-        ) : (
-          <TitleContacts>Phonebook is empty</TitleContacts>
-        )}
-        {isLoading && <p>Loading...</p>}
+        {contacts.length > 0 && !error && <ContactList />}
+        {isLoading && <Loader />}
       </Container>
     </Box>
   );
