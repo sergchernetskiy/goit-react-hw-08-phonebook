@@ -12,7 +12,7 @@ export const ElementListContacts = ({ id, name, number }) => {
   const error = useSelector(selectError);
 
   const handleDelete = () => {
-    dispatch(deleteContact({ id }));
+    dispatch(deleteContact(id));
 
     if (error) {
       notifyWarn(`Name ${name} has been not removed`);
