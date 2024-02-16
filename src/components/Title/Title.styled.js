@@ -1,7 +1,9 @@
 import styled from 'styled-components';
 
 export const Title = styled.h1`
-  margin-bottom: ${p => p.theme.space[5]}px;
+  margin-top: ${p => p.theme.space[0]}px;
+  margin-bottom: ${p => p.theme.space[0]}px;
+  padding: ${p => p.theme.space[1]}px 0px;
   font-family: ${p => p.theme.fonts.heading};
   font-size: ${p => p.theme.fontSizes.xl};
   font-weight: ${p => p.theme.fontWeights.heading};

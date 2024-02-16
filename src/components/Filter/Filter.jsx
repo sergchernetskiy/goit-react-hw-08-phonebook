@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 
-import { selectFilter } from '../../redux/selectors';
-import { changeFilter } from '../../redux/filterSlice';
+import { selectFilter } from '../../redux/filter/selectors';
+import { changeFilter } from '../../redux/filter/filterSlice';
 import { Input, Label } from './Filter.styled';
 
 export const Filter = () => {

@@ -1,46 +1,57 @@
-import { useEffect } from 'react';
-import {
-  selectContacts,
-  selectIsLoading,
-  selectError,
-} from '../redux/selectors';
-import { Toaster } from 'react-hot-toast';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, lazy } from 'react';
+import { useDispatch } from 'react-redux';
+import { Routes, Route } from 'react-router-dom';
 
-import { fetchContacts } from '../redux/operations';
-import { Box } from '../components/Box';
-import Form from './Form/Form';
-import { Filter } from './Filter/Filter';
-import { ContactList } from './ContactsList/ContactsList';
-import { Title, TitleContacts } from './Title/Title.styled';
-import { Container } from './Container/Container.styled';
-import { Loader } from './Loader/Loader';
+import { Layout } from './Layout/Layout';
+import { PrivateRoute } from './PrivateRoute';
+import { RestrictedRoute } from './RestrictedRoute';
+import { refreshUser } from '../redux/auth/operations';
+import { useAuth } from '../hooks/useAuth';
+
+const HomePage = lazy(() => import('pages/Home'));
+const ContactsPage = lazy(() => import('../pages/Contacts'));
+const AuthorizationPage = lazy(() => import('../pages/SignUp'));
+const LoginPage = lazy(() => import('pages/Login'));
+const NotFound = lazy(() => import('pages/NotFound'));
 
 const App = () => {
   const dispatch = useDispatch();
-
-  const isLoading = useSelector(selectIsLoading);
-  const error = useSelector(selectError);
-  const contacts = useSelector(selectContacts);
+  const { isRefreshing } = useAuth;
 
   useEffect(() => {
-    dispatch(fetchContacts());
+    dispatch(refreshUser());
   }, [dispatch]);
 
-  return (
-    <Box p={[4]}>
-      <Container>
-        <Toaster />
-        <Title>Phonebook</Title>
-        <Form />
-
-        <TitleContacts>Contacts</TitleContacts>
-        <Filter />
-        {!isLoading && error && <p>{error}</p>}
-        {contacts.length > 0 && !error && <ContactList />}
-        {isLoading && <Loader />}
-      </Container>
-    </Box>
+  return isRefreshing ? (
+    <b>Refreshing user...</b>
+  ) : (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route
+          path="register"
+          element={
+            <RestrictedRoute
+              redirectTo="/contacts"
+              component={<AuthorizationPage />}
+            />
+          }
+        />
+        <Route
+          path="login"
+          element={
+            <RestrictedRoute redirectTo="/contacts" component={<LoginPage />} />
+          }
+        />
+        <Route
+          path="contacts"
+          element={
+            <PrivateRoute redirectTo="/login" component={<ContactsPage />} />
+          }
+        />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
   );
 };
 

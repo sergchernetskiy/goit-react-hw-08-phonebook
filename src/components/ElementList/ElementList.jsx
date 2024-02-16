@@ -2,8 +2,8 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { AiOutlineRest } from 'react-icons/ai';
 
-import { deleteContact } from '../../redux/operations';
-import { selectError } from '../../redux/selectors';
+import { deleteContact } from '../../redux/contacts/operations';
+import { selectError } from '../../redux/contacts/selectors';
 import { Button, Text, Circle, ElementList } from './ElementList.styled';
 import { notifyWarn } from 'components/Notification/Notification';
 
